@@ -1,72 +1,70 @@
 import javax.swing.JOptionPane
 
-fun railFenceEncrypt(text: String, rails: Int): String {
-    if (rails <= 1) return text
+fun cifrarRailFence(texto: String, rieles: Int): String {
+    if (rieles <= 1) return texto
 
-    val fence = Array(rails) { StringBuilder() }
-    var rail = 0
-    var direction = 1
+    val matriz = Array(rieles) { StringBuilder() }
+    var riel = 0
+    var direccion = 1
 
-    for (char in text) {
-        fence[rail].append(char)
-        rail += direction
-        if (rail == 0 || rail == rails - 1) direction *= -1
+    for (caracter in texto) {
+        matriz[riel].append(caracter)
+        riel += direccion
+        if (riel == 0 || riel == rieles - 1) direccion *= -1
     }
 
-    return fence.joinToString("")
+    return matriz.joinToString("")
 }
 
-fun railFenceDecrypt(cipherText: String, rails: Int): String {
-    if (rails <= 1) return cipherText
+fun descifrarRailFence(textoCifrado: String, rieles: Int): String {
+    if (rieles <= 1) return textoCifrado
 
-    val pattern = mutableListOf<Int>()
-    var rail = 0
-    var direction = 1
+    val patron = mutableListOf<Int>()
+    var riel = 0
+    var direccion = 1
 
-    for (i in cipherText.indices) {
-        pattern.add(rail)
-        rail += direction
-        if (rail == 0 || rail == rails - 1) direction *= -1
+    for (i in textoCifrado.indices) {
+        patron.add(riel)
+        riel += direccion
+        if (riel == 0 || riel == rieles - 1) direccion *= -1
     }
 
-    val fence = Array(rails) { StringBuilder() }
-    val indices = pattern.sorted().withIndex()
+    val matriz = Array(rieles) { StringBuilder() }
+    val indicesOrdenados = patron.sorted().withIndex()
 
-
-    for ((i, railIndex) in indices) {
-        fence[railIndex].append(cipherText[i])
+    for ((i, rielIndex) in indicesOrdenados) {
+        matriz[rielIndex].append(textoCifrado[i])
     }
 
-    val decryptedText = StringBuilder()
-    for (i in pattern.indices) {
-        decryptedText.append(fence[pattern[i]].first())
-        fence[pattern[i]].deleteCharAt(0)
+    val textoDescifrado = StringBuilder()
+    for (i in patron.indices) {
+        textoDescifrado.append(matriz[patron[i]][0])
+        matriz[patron[i]].deleteCharAt(0)
     }
 
-    return decryptedText.toString()
+    return textoDescifrado.toString()
 }
 
 fun main() {
-    val options = arrayOf("Cifrar", "Descifrar", "Salir")
+    val opciones = arrayOf("Cifrar", "Descifrar", "Salir")
 
     while (true) {
-        val choice = JOptionPane.showOptionDialog(
+        val eleccion = JOptionPane.showOptionDialog(
             null, "Seleccione una opción:", "Cifrado Rail Fence",
             JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-            null, options, options[0]
+            null, opciones, opciones[0]
         )
 
-        if (choice == 2 || choice == JOptionPane.CLOSED_OPTION) break
+        if (eleccion == 2 || eleccion == JOptionPane.CLOSED_OPTION) break
 
-        val text = JOptionPane.showInputDialog("Ingrese el texto:")
-        if (text.isNullOrEmpty()) continue
+        val texto = JOptionPane.showInputDialog("Ingrese el texto:") ?: continue
+        if (texto.isEmpty()) continue
 
-        val railsInput = JOptionPane.showInputDialog("Ingrese el número de rieles:")
-        val rails = railsInput?.toIntOrNull() ?: continue
+        val rieles = JOptionPane.showInputDialog("Ingrese el número de rieles:")?.toIntOrNull() ?: continue
 
-        val result = if (choice == 0) railFenceEncrypt(text, rails)
-        else railFenceDecrypt(text, rails)
+        val resultado = if (eleccion == 0) cifrarRailFence(texto, rieles)
+        else descifrarRailFence(texto, rieles)
 
-        JOptionPane.showMessageDialog(null, "Resultado: $result")
+        JOptionPane.showMessageDialog(null, "Resultado: $resultado")
     }
 }
